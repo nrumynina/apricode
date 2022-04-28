@@ -15,12 +15,30 @@ class VideoGameRepository extends ServiceEntityRepository
         parent::__construct($registry, VideoGame::class);
     }
 
-    public function getVideoGamesByGenre(string $genre): array
+    public function getVideoGamesByCriteria(?string $genre, ?string $status, ?string $developerName): array
     {
-        return $this
-            ->createQueryBuilder('vg')
-            ->where('vg.genres LIKE :genre')
-            ->setParameter(':genre', '%' . $genre . '%')
+        $qb = $this->createQueryBuilder('vg');
+
+        if ($genre) {
+            $qb
+                ->where('vg.genres LIKE :genre')
+                ->setParameter(':genre', '%' . $genre . '%');
+        }
+
+        if ($status) {
+            $qb
+                ->andWhere('vg.status = :status')
+                ->setParameter(':status', $status);
+        }
+
+        if ($developerName) {
+            $qb
+                ->join('vg.developer', 'd')
+                ->andWhere('d.name = :developerName')
+                ->setParameter(':developerName', $developerName);
+        }
+
+        return $qb
             ->getQuery()
             ->getResult();
     }

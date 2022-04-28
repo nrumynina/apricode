@@ -15,9 +15,9 @@ class VideoGameService
         private EntityManagerInterface $entityManager
     ) {}
 
-    public function getAllVideoGames(): array
+    public function getVideoGamesByCriteria(?string $genre, ?string $status, ?string $developerName): array
     {
-        return $this->videoGameRepository->findAll();
+        return $this->videoGameRepository->getVideoGamesByCriteria($genre, $status, $developerName);
     }
 
     public function addVideoGame(array $data)
@@ -53,12 +53,5 @@ class VideoGameService
     {
         $this->entityManager->remove($videoGame);
         $this->entityManager->flush();
-    }
-
-    public function getVideoGameByGenre(string $genre): array
-    {
-        $repo = $this->entityManager->getRepository(VideoGame::class);
-
-        return $repo->getVideoGamesByGenre($genre);
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Entity;;
+namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\VideoGameRepository;
@@ -27,11 +27,19 @@ class VideoGame implements \JsonSerializable
     private $name;
 
     /**
-     * @var string
+     * @var Developer
      *
-     * @ORM\Column(type="string", length=255)
+     * @ORM\ManyToOne(targetEntity="Developer")
+     * @ORM\JoinColumn(name="developer_id", referencedColumnName="id", nullable=false)
      */
     private $developer;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=255, nullable=false)
+     */
+    private $status;
 
     /**
      * @var string[]|null
@@ -57,12 +65,12 @@ class VideoGame implements \JsonSerializable
         return $this;
     }
 
-    public function getDeveloper(): string
+    public function getDeveloper(): Developer
     {
         return $this->developer;
     }
 
-    public function setDeveloper(string $developer): self
+    public function setDeveloper(Developer $developer): self
     {
         $this->developer = $developer;
 
@@ -80,12 +88,24 @@ class VideoGame implements \JsonSerializable
         return $this;
     }
 
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
+        return $this;
+    }
+
     public function jsonSerialize()
     {
         return [
             'id' => $this->getId(),
             'name' => $this->getName(),
-            'developer' => $this->getDeveloper(),
+            'status' => $this->getStatus(),
+            'developer' => $this->getDeveloper()->getName(),
             'genres' => $this->getGenres(),
         ];
     }

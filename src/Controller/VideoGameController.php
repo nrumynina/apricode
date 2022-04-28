@@ -23,9 +23,13 @@ class VideoGameController extends AbstractController
     /**
      * @Route("/api/videogames", name="videogames", methods={"GET"})
      */
-    public function getVideoGames(): JsonResponse
+    public function getVideoGames(Request $request): JsonResponse
     {
-        $data = $this->videoGameService->getAllVideoGames();
+        $genre = $request->get('genre');
+        $status = $request->get('status');
+        $developer = $request->get('developer');
+
+        $data = $this->videoGameService->getVideoGamesByCriteria($genre, $status, $developer);
 
         return new JsonResponse($data, Response::HTTP_OK);
     }
@@ -86,15 +90,5 @@ class VideoGameController extends AbstractController
         $this->videoGameService->deleteVideoGame($videoGame);
 
         return new JsonResponse(['status' => true], Response::HTTP_NO_CONTENT);
-    }
-
-    /**
-     * @Route("/api/videogames-by-genre/{genre}", methods={"GET"})
-     */
-    public function getVideoGamesByGenre(string $genre): JsonResponse
-    {
-        $data = $this->videoGameService->getVideoGameByGenre($genre);
-
-        return new JsonResponse($data, Response::HTTP_OK);
     }
 }

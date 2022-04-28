@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Developer;
 use App\Entity\VideoGame;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -22,10 +23,16 @@ class AppFixtures extends Fixture
         $faker = Factory::create();
 
         for ($i = 0; $i < 5; $i++) {
+            $developer = new Developer();
+            $developer->setName($faker->company);
+
             $videogame = new VideoGame();
             $videogame->setName($faker->word);
-            $videogame->setDeveloper($faker->company);
+            $videogame->setDeveloper($developer);
+            $videogame->setStatus($faker->word);
             $videogame->setGenres($faker->randomElements(self::$genres, rand(1,3)));
+
+            $manager->persist($developer);
             $manager->persist($videogame);
         }
 
